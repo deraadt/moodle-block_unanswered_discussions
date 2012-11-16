@@ -1,0 +1,20 @@
+.block_unanswered_discussions_heading {
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+}
+
+.block_unanswered_discussions_item {
+    padding: 0;
+    margin: 0 0 5px 10px;
+    border-bottom: 1px solid #e9e9e9;
+}
+
+.block_unanswered_discussions_message {
+    font-size: 0.75em;
+}
+
+.block_unanswered_discussions_date {
+    font-size: 0.75em;
+    font-style: italic;
+}

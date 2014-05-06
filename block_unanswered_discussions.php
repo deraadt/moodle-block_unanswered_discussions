@@ -75,7 +75,8 @@ class block_unanswered_discussions extends block_base {
         // Excluded News forums by default
         if (!isset($this->config->exclude)) {
             $this->config->exclude = array();
-            if ($newsforums = $DB->get_records_select('forum', "course=\"$COURSE->id\" AND type=\"news\"")) {
+            $params = array('course'=>$COURSE->id, 'type'=>'news');
+            if ($newsforums = $DB->get_records('forum', $params)) {
                 foreach ($newsforums as $key => $forum) {
                     $this->config->exclude[] = $forum->id;
                 }
@@ -130,14 +131,14 @@ class block_unanswered_discussions extends block_base {
             $where_post_exclude_sql = (!empty($discussion_exclude) ? 'AND d.id NOT IN(' . join($discussion_exclude, ',') . ')' : '');
 
             // Building up the SQL statement from the bits and pieces above
-            $sql = "SELECT d.id, d.name, d.timemodified, d.groupid, (COUNT(p.id) - 1) AS replies
+            $sql = "SELECT d.id, d.forum, d.name, d.timemodified, d.groupid, (COUNT(p.id) - 1) AS replies
                     FROM {forum_posts} p, {forum_discussions} d
                     WHERE d.course = $course
                           $where_fora_exclude_sql
                           $where_post_exclude_sql
                           AND d.id = p.discussion
                           {$queries['where'][$i]}
-                    GROUP BY d.id, d.name, d.timemodified, d.groupid
+                    GROUP BY d.id, d.forum, d.name, d.timemodified, d.groupid
                     HAVING COUNT(p.id) = 1
                     ORDER BY {$queries['order'][$i]}replies ASC";
 
@@ -149,6 +150,15 @@ class block_unanswered_discussions extends block_base {
                 unset($this->discussions[$i]);
                 continue;
             }
+
+            // Filter forums that are not visible or should appear to users in groupings
+            foreach ($this->discussions[$i] as $key => $discussion) {
+                $coursemodule = get_coursemodule_from_instance('forum', $discussion->forum, $course);
+                if (!$coursemodule->visible || !groups_course_module_visible($coursemodule, $USER->id)) {
+                    unset($this->discussions[$i][$key]);
+                }
+            }
+            $this->discussions[$i] = array_values($this->discussions[$i]);
 
             // For random posts, shuffle
             if ($i == 0) {

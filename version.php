@@ -24,7 +24,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$plugin->version  = 2014050600;
-$plugin->requires = 2010112400;
-$plugin->maturity = 200;
-$plugin->release  = 'Version for Moodle 2.x';
+$plugin->version   = 2015070200;
+$plugin->requires  = 2010112400;
+$plugin->maturity  = 200;
+$plugin->release   = 'Version for Moodle 2.x';
+$plugin->component = 'block_unanswered_discussions';

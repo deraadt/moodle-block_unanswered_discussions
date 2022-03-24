@@ -100,7 +100,7 @@ class block_unanswered_discussions extends block_base {
         // Exclude specified forums.
         $whereforaexcludesql = '';
         if (!empty($this->config->exclude)) {
-            $whereforaexcludesql = ' AND d.forum NOT IN(' . join($this->config->exclude, ',') . ') ';
+            $whereforaexcludesql = ' AND d.forum NOT IN(' . join(',', $this->config->exclude) . ') ';
         }
         $this->config->limits = array (
             $this->config->randomposts,
@@ -128,7 +128,7 @@ class block_unanswered_discussions extends block_base {
             }
 
             // If we've got excluded discussions build up the sql to exclude them.
-            $wherepostexcludesql = (!empty($discussionexclude) ? 'AND d.id NOT IN(' . join($discussionexclude, ',') . ')' : '');
+            $wherepostexcludesql = (!empty($discussionexclude) ? 'AND d.id NOT IN(' . join(',', $discussionexclude) . ')' : '');
 
             // Building up the SQL statement from the bits and pieces above.
             $sql = "SELECT d.id, d.forum, d.name, d.timemodified, d.groupid, (COUNT(p.id) - 1) AS replies
